@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/currencyExchangeRates.iml" filepath="$PROJECT_DIR$/currencyExchangeRates.iml" />
       <module fileurl="file://$PROJECT_DIR$/currencyexchange.iml" filepath="$PROJECT_DIR$/currencyexchange.iml" />
     </modules>
   </component>

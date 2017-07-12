@@ -4,49 +4,45 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#f4f3f3"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="#f4f3f3"
     tools:context="com.ahmedkhaled.currencyexchange.MainActivity">
 
-   <TextView
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_alignParentTop="true"
-       android:text="Last Updated : "
-       android:id="@+id/lastUpdated"
-       />
+    <TextView
+        android:id="@+id/lastUpdated"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        tools:text="@string/last_updated" />
 
-   <RelativeLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:id="@+id/container1"
-       android:layout_marginTop="10dp"
-       android:layout_marginBottom="10dp"
-       android:layout_below="@+id/lastUpdated">
+    <RelativeLayout
+        android:id="@+id/container1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lastUpdated"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp">
 
-      <Spinner
-          android:layout_width="100dp"
-          android:layout_height="wrap_content"
-          android:id="@+id/baseSpinner">
-      </Spinner>
+        <Spinner
+            android:id="@+id/baseSpinner"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"></Spinner>
 
-      <Spinner
-          android:layout_width="100dp"
-          android:layout_height="wrap_content"
-          android:id="@+id/currencySpinner"
-          android:layout_alignParentRight="true">
-      </Spinner>
+        <Spinner
+            android:id="@+id/currencySpinner"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"></Spinner>
 
-   </RelativeLayout>
+    </RelativeLayout>
 
-   <ListView
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:layout_below="@id/container1"
-       android:id="@+id/list">
-   </ListView>
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/container1"></ListView>
 
 </RelativeLayout>
