@@ -11,26 +11,24 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 
-
 public class CurrencyAdapter extends BaseAdapter {
 
-    private ArrayList<Curency> curencies;
+    private ArrayList<Currency> currencies;
     private Context context;
 
-    public CurrencyAdapter(Context context, ArrayList<Curency> curencies) {
+    public CurrencyAdapter(Context context, ArrayList<Currency> currencies) {
         this.context = context;
-        this.curencies = curencies;
-        curencies=new ArrayList<>();
+        this.currencies = currencies;
     }
 
     @Override
     public int getCount() {
-        return curencies.size();
+        return (currencies != null) ? currencies.size() : 0;
     }
 
     @Override
     public Object getItem(int i) {
-        return curencies.get(i).currency;
+        return currencies.get(i).getCurrency();
     }
 
     @Override
@@ -40,17 +38,19 @@ public class CurrencyAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        LayoutInflater layoutInflater=LayoutInflater.from(context);
-        View row=layoutInflater.inflate(R.layout.list_row,null);
+        // reuse of created view for smoother scrolling
+        // create view if and only if view is null
+        if (view == null)
+            view = LayoutInflater.from(context).inflate(R.layout.list_row, null);
 
-        TextView currency= (TextView) row.findViewById(R.id.currency);
-        TextView rate= (TextView) row.findViewById(R.id.rate);
-        ImageView flag= (ImageView) row.findViewById(R.id.flag);
+        TextView currency = (TextView) view.findViewById(R.id.currency);
+        TextView rate = (TextView) view.findViewById(R.id.rate);
+        ImageView flag = (ImageView) view.findViewById(R.id.flag);
 
-        currency.setText(curencies.get(i).currency);
-        rate.setText(String.valueOf(curencies.get(i).rate));
+        currency.setText(currencies.get(i).getCurrency());
+        rate.setText(String.valueOf(currencies.get(i).getRate()));
         flag.setImageResource(R.drawable.dollar);
 
-        return row;
+        return view;
     }
 }
