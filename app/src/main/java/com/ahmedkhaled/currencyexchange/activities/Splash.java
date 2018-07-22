@@ -1,8 +1,10 @@
-package com.ahmedkhaled.currencyexchange;
+package com.ahmedkhaled.currencyexchange.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.ahmedkhaled.currencyexchange.R;
 
 public class Splash extends AppCompatActivity {
 

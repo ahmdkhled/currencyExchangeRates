@@ -1,4 +1,4 @@
-package com.ahmedkhaled.currencyexchange;
+package com.ahmedkhaled.currencyexchange.network;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -14,9 +14,7 @@ public class Internet {
         ConnectivityManager connectivityManager= (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo= connectivityManager.getActiveNetworkInfo();
 
-        if (networkInfo!=null&&networkInfo.isConnected()){
-            return true;
-        }else {return false;}
+        return networkInfo != null && networkInfo.isConnected();
 
 
     }

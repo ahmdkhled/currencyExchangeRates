@@ -1,6 +1,8 @@
 package com.ahmedkhaled.currencyexchange;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,11 +10,15 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ahmedkhaled.currencyexchange.model.Curency;
+
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 
 
-public class CurrencyAdapter extends BaseAdapter {
+public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.CurrencyHolder> {
 
     private ArrayList<Curency> curencies;
     private Context context;
@@ -20,37 +26,33 @@ public class CurrencyAdapter extends BaseAdapter {
     public CurrencyAdapter(Context context, ArrayList<Curency> curencies) {
         this.context = context;
         this.curencies = curencies;
-        curencies=new ArrayList<>();
+    }
+
+    @NonNull
+    @Override
+    public CurrencyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view=LayoutInflater.from(context).inflate(R.layout.list_row,parent,false);
+        return new CurrencyHolder(view);
     }
 
     @Override
-    public int getCount() {
+    public void onBindViewHolder(@NonNull CurrencyHolder holder, int position) {
+        holder.currency.setText(curencies.get(position).getCurrency());
+        holder.rate.setText(String.valueOf(curencies.get(position).getRate()));
+    }
+
+    @Override
+    public int getItemCount() {
         return curencies.size();
     }
 
-    @Override
-    public Object getItem(int i) {
-        return curencies.get(i).currency;
+    class CurrencyHolder extends RecyclerView.ViewHolder{
+        TextView currency,rate;
+        public CurrencyHolder(View itemView) {
+            super(itemView);
+            currency=itemView.findViewById(R.id.currency);
+            rate=itemView.findViewById(R.id.rate);
+        }
     }
 
-    @Override
-    public long getItemId(int i) {
-        return i;
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        LayoutInflater layoutInflater=LayoutInflater.from(context);
-        View row=layoutInflater.inflate(R.layout.list_row,null);
-
-        TextView currency= (TextView) row.findViewById(R.id.currency);
-        TextView rate= (TextView) row.findViewById(R.id.rate);
-        ImageView flag= (ImageView) row.findViewById(R.id.flag);
-
-        currency.setText(curencies.get(i).currency);
-        rate.setText(String.valueOf(curencies.get(i).rate));
-        flag.setImageResource(R.drawable.dollar);
-
-        return row;
-    }
 }

@@ -1,7 +1,9 @@
-package com.ahmedkhaled.currencyexchange;
+package com.ahmedkhaled.currencyexchange.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,32 +12,32 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.ahmedkhaled.currencyexchange.CurrencyAdapter;
+import com.ahmedkhaled.currencyexchange.R;
+import com.ahmedkhaled.currencyexchange.model.Curency;
+import com.ahmedkhaled.currencyexchange.network.Internet;
+import com.ahmedkhaled.currencyexchange.network.RequestHandler;
+import com.ahmedkhaled.currencyexchange.network.Urls;
 
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements OnDataReceivedListener {
+public class MainActivity extends AppCompatActivity implements RequestHandler.OnDataReceivedListener {
     String mUrl="https://api.fixer.io/latest";
     int baseIndex,currencyIndex;
     ArrayList<Curency> arrayList;
     String[] baseArray,currencyarray;
     TextView lastUpdated;
-    ListView list;
+    RecyclerView recyclerView;
     Spinner baseSpinner,currencySpinner;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        list= (ListView) findViewById(R.id.list);
+        recyclerView=findViewById(R.id.recyclerView);
 
-        lastUpdated= (TextView) findViewById(R.id.lastUpdated);
-        baseSpinner= (Spinner) findViewById(R.id.baseSpinner);
-        currencySpinner= (Spinner) findViewById(R.id.currencySpinner);
+        lastUpdated= findViewById(R.id.lastUpdated);
+        baseSpinner= findViewById(R.id.baseSpinner);
+        currencySpinner= findViewById(R.id.currencySpinner);
 
         arrayList=new ArrayList<>();
 
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements OnDataReceivedLis
         currencyarray=new String[]{	"All","EUR","USD","AUD","BGN","BRL","CAD","CHF","CNY","CZK","DKK","GBP","HKD","HRK","HUF","IDR"
                 ,"ILS","INR", "JPY","KRW","MXN","MYR","NOK","NZD","PHP","PLN","RON","RUB","SEK","SGD","THB","TRY","ZAR",};
 
-        final OnDataReceivedListener onDataReceivedListener=this;
+        final RequestHandler.OnDataReceivedListener onDataReceivedListener=this;
 
         if (!Internet.isAvailable(this)){
                     Toast.makeText(getApplicationContext(),"there is no connnection ",Toast.LENGTH_LONG).show();}
@@ -56,14 +58,14 @@ public class MainActivity extends AppCompatActivity implements OnDataReceivedLis
                 baseIndex=i;
                 String current=baseArray[i];
                 if (currencyIndex==0){
-                    mUrl="https://api.fixer.io/latest?base="+current;
+                    mUrl= Urls.getRateByBase(current);
                     RequestHandler requestHandler=new RequestHandler(mUrl,onDataReceivedListener,MainActivity.this);
                     requestHandler.start();
                     Log.d("TAG2","index is 0 "+mUrl);
                 }else  {
                     String currentBase=baseArray[baseIndex];
                     String currentCurrency=currencyarray[currencyIndex];
-                    mUrl="https://api.fixer.io/latest?base="+currentBase+"&symbols="+currentCurrency;
+                    mUrl=Urls.getRateByBaseAndSymbols(currentBase,currentCurrency);
                     RequestHandler requestHandler=new RequestHandler(mUrl,onDataReceivedListener,MainActivity.this);
                     requestHandler.start();
                     Log.d("TAG2","index is great "+mUrl);
@@ -85,12 +87,12 @@ public class MainActivity extends AppCompatActivity implements OnDataReceivedLis
                 String currentCurrency=currencyarray[currencyIndex];
 
                 if (currencyIndex > 0) {
-                    mUrl="http://api.fixer.io/latest?base="+currentBase+"&symbols="+currentCurrency;
+                    mUrl=Urls.getRateByBaseAndSymbols(currentBase,currentCurrency);
                     RequestHandler requestHandler=new RequestHandler(mUrl,onDataReceivedListener,MainActivity.this);
                     requestHandler.start();
                     Log.d("TAG2","second spinner "+mUrl);
                 }else {
-                    mUrl="http://api.fixer.io/latest?base="+currentBase;
+                    mUrl= Urls.getRateByBase(currentBase);
                     RequestHandler requestHandler=new RequestHandler(mUrl,onDataReceivedListener,MainActivity.this);
                     requestHandler.start();
                     Log.d("TAG2","second spinner "+mUrl);
@@ -121,7 +123,8 @@ public class MainActivity extends AppCompatActivity implements OnDataReceivedLis
     public void OnDataReceived(ArrayList<Curency> currencyArray,String base,String date) {
         lastUpdated.setText("last updated : "+date);
         CurrencyAdapter currenciesAdapter=new CurrencyAdapter(this,currencyArray);
-        list.setAdapter(currenciesAdapter);
+        recyclerView.setAdapter(currenciesAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     }
 
