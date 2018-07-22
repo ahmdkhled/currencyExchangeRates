@@ -1,35 +1,30 @@
 package com.ahmedkhaled.currencyexchange.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 
 import com.ahmedkhaled.currencyexchange.R;
 
 public class Splash extends AppCompatActivity {
+    private final float SPLASH_TIME = 1.5f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        thread.start();
-    }
 
-    Thread thread =new Thread(){
-
-
-        @Override
-        public void run() {
-            try {
-                sleep(1500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // this code inside runnable will execute once the time is over
+                // start the MainActivity
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                //close the activity
+                finish();
             }
-
-            startActivity(new Intent(getApplicationContext(),MainActivity.class));
-            finish();
-        }
-    };
-
+        }, 1500);
+    }
 }

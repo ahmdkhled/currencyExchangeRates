@@ -11,41 +11,42 @@
     android:background="#f4f3f3"
     tools:context="com.ahmedkhaled.currencyexchange.activities.MainActivity">
 
-   <TextView
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_alignParentTop="true"
-       android:text="Last Updated : "
-       android:id="@+id/lastUpdated"
-       />
 
-   <RelativeLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:id="@+id/container1"
-       android:layout_marginTop="10dp"
-       android:layout_marginBottom="10dp"
-       android:layout_below="@+id/lastUpdated">
+    <TextView
+        android:id="@+id/lastUpdated"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        tools:text="@string/last_updated" />
 
-      <Spinner
-          android:layout_width="100dp"
-          android:layout_height="wrap_content"
-          android:id="@+id/baseSpinner">
-      </Spinner>
+    <RelativeLayout
+        android:id="@+id/container1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lastUpdated"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp">
 
-      <Spinner
-          android:layout_width="100dp"
-          android:layout_height="wrap_content"
-          android:id="@+id/currencySpinner"
-          android:layout_alignParentRight="true">
-      </Spinner>
+        <Spinner
+            android:id="@+id/baseSpinner"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content">
+        </Spinner>
 
-   </RelativeLayout>
+        <Spinner
+            android:id="@+id/currencySpinner"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true">
+        </Spinner>
+
+    </RelativeLayout>
 
    <android.support.v7.widget.RecyclerView
        android:layout_width="match_parent"
        android:layout_height="match_parent"
        android:layout_below="@id/container1"
        android:id="@+id/recyclerView"/>
+
 
 </RelativeLayout>

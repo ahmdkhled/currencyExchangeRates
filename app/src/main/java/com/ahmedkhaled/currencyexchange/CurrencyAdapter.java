@@ -6,26 +6,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.ahmedkhaled.currencyexchange.model.Curency;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 
 
 public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.CurrencyHolder> {
 
-    private ArrayList<Curency> curencies;
+    private ArrayList<Currency> currencies;
     private Context context;
 
-    public CurrencyAdapter(Context context, ArrayList<Curency> curencies) {
+    public CurrencyAdapter(Context context, ArrayList<Currency> currencies) {
         this.context = context;
-        this.curencies = curencies;
+        this.currencies = currencies;
     }
 
     @NonNull
@@ -37,13 +30,13 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.Curren
 
     @Override
     public void onBindViewHolder(@NonNull CurrencyHolder holder, int position) {
-        holder.currency.setText(curencies.get(position).getCurrency());
-        holder.rate.setText(String.valueOf(curencies.get(position).getRate()));
+        holder.currency.setText(currencies.get(position).getCurrency());
+        holder.rate.setText(String.valueOf(currencies.get(position).getRate()));
     }
 
     @Override
     public int getItemCount() {
-        return curencies.size();
+        return currencies.size();
     }
 
     class CurrencyHolder extends RecyclerView.ViewHolder{
@@ -53,6 +46,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.Curren
             currency=itemView.findViewById(R.id.currency);
             rate=itemView.findViewById(R.id.rate);
         }
-    }
+
 
 }
+    }

@@ -1,49 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
+    android:layout_height="75dp"
+    android:layout_marginBottom="5dp"
+    android:background="@android:color/white"
+    android:orientation="horizontal">
 
-    <RelativeLayout
-        android:background="#fff"
-        android:layout_width="match_parent"
-        android:layout_marginBottom="5dp"
-        android:layout_height="75dp">
+    <ImageView
+        android:id="@+id/flag"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:layout_weight="1"
+        android:contentDescription="@string/currency_image"
+        android:padding="10dp"
+        android:src="@drawable/dollar" />
 
-        <ImageView
-            android:id="@+id/flag"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/dollar"
-            android:layout_centerVertical="true"
-            />
-        <TextView
-            android:id="@+id/currency"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BASE"
-            android:textSize="20sp"
-            android:textColor="#000"
-            android:fontFamily="casual"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_centerVertical="true"
-            />
-        <TextView
-            android:id="@+id/rate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="rate"
-            android:fontFamily="casual"
-            android:textSize="20sp"
-            android:textColor="#ff1466"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="10dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"/>
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/currency"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fontFamily="casual"
+        android:gravity="center"
+        android:textColor="#000"
+        android:textSize="20sp"
+        tools:text="BASE" />
+
+    <TextView
+        android:id="@+id/rate"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fontFamily="casual"
+        android:gravity="center"
+        android:textColor="#ff1466"
+        android:textSize="20sp"
+        tools:text="rate" />
 
 </LinearLayout>

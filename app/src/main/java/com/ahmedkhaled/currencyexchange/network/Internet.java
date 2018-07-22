@@ -13,9 +13,7 @@ public class Internet {
     public static boolean isAvailable(Context context){
         ConnectivityManager connectivityManager= (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo= connectivityManager.getActiveNetworkInfo();
-
         return networkInfo != null && networkInfo.isConnected();
-
 
     }
 }
