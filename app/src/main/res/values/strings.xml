@@ -2,4 +2,5 @@
     <string name="app_name">currency Exchange Rates</string>
     <string name="currency_image">item_image_description</string>
     <string name="last_updated">Last Updated : </string>
+    <string name="app_desc">Currency Exchange Rates App</string>
 </resources>

@@ -12,10 +12,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ahmedkhaled.currencyexchange.Currency;
+import com.ahmedkhaled.currencyexchange.model.Currency;
 import com.ahmedkhaled.currencyexchange.CurrencyAdapter;
 import com.ahmedkhaled.currencyexchange.R;
-import com.ahmedkhaled.currencyexchange.model.Curency;
 import com.ahmedkhaled.currencyexchange.network.Internet;
 import com.ahmedkhaled.currencyexchange.network.RequestHandler;
 import com.ahmedkhaled.currencyexchange.network.Urls;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements RequestHandler.OnDataReceivedListener {
     String mUrl;
     int baseIndex,currencyIndex;
-    ArrayList<Curency> arrayList;
+    ArrayList<Currency> arrayList;
     String[] baseArray,currencyarray;
     TextView lastUpdated;
     RecyclerView recyclerView;
