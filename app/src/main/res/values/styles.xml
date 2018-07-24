@@ -15,8 +15,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="splashTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowFullscreen">true</item>
-
+    <style name="splashTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="colorPrimary">#0edc7c</item>
+        <item name="colorPrimaryDark">#000</item>
     </style>
 </resources>
