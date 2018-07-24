@@ -1,4 +1,4 @@
-package com.ahmedkhaled.currencyexchange;
+package com.ahmedkhaled.currencyexchange.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,6 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.ahmedkhaled.currencyexchange.R;
+import com.ahmedkhaled.currencyexchange.model.Currency;
+
 import java.util.ArrayList;
 
 
@@ -36,6 +40,8 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.Curren
 
     @Override
     public int getItemCount() {
+        if (currencies==null)
+            return 0;
         return currencies.size();
     }
 

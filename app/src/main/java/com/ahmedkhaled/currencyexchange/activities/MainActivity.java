@@ -13,15 +13,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ahmedkhaled.currencyexchange.model.Currency;
-import com.ahmedkhaled.currencyexchange.CurrencyAdapter;
+import com.ahmedkhaled.currencyexchange.adapters.CurrencyAdapter;
 import com.ahmedkhaled.currencyexchange.R;
 import com.ahmedkhaled.currencyexchange.network.Internet;
-import com.ahmedkhaled.currencyexchange.network.RequestHandler;
-import com.ahmedkhaled.currencyexchange.network.Urls;
+import com.ahmedkhaled.currencyexchange.network.JsonParser;
+import com.ahmedkhaled.currencyexchange.network.RetrofitClient;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements RequestHandler.OnDataReceivedListener {
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class MainActivity extends AppCompatActivity {
     String mUrl;
     int baseIndex,currencyIndex;
     ArrayList<Currency> arrayList;
@@ -29,6 +35,12 @@ public class MainActivity extends AppCompatActivity implements RequestHandler.On
     TextView lastUpdated;
     RecyclerView recyclerView;
     Spinner baseSpinner,currencySpinner;
+    ArrayList<Currency> currencies;
+    String date;
+    String base="EUR";
+    boolean baseFT=true;
+    boolean currencyFT=true;
+
 
 
     @Override
@@ -53,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements RequestHandler.On
         currencyarray = new String[]{"All", "EUR", "USD", "AUD", "BGN", "BRL", "CAD", "CHF", "CNY", "CZK", "DKK", "GBP", "HKD", "HRK", "HUF", "IDR"
                 , "ILS", "INR", "JPY", "KRW", "MXN", "MYR", "NOK", "NZD", "PHP", "PLN", "RON", "RUB", "SEK", "SGD", "THB", "TRY", "ZAR",};
 
-        final RequestHandler.OnDataReceivedListener onDataReceivedListener=this;
 
         if (!Internet.isAvailable(this)) {
             Toast.makeText(getApplicationContext(), "there is no connection available", Toast.LENGTH_LONG).show();
@@ -62,20 +73,20 @@ public class MainActivity extends AppCompatActivity implements RequestHandler.On
         baseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                   @Override
                   public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                      baseIndex = i;
-                      String current = baseArray[i];
-                      if (currencyIndex == 0) {
-                          mUrl = Urls.getRateByBase(current);
-                          RequestHandler requestHandler = new RequestHandler(mUrl, onDataReceivedListener, MainActivity.this);
-                          requestHandler.start();
-                          Log.d("TAG2", "index is 0 " + mUrl);
-                      } else {
-                          String currentBase = baseArray[baseIndex];
-                          String currentCurrency = currencyarray[currencyIndex];
-                          mUrl = Urls.getRateByBaseAndSymbols(currentBase, currentCurrency);
-                          RequestHandler requestHandler = new RequestHandler(mUrl, onDataReceivedListener, MainActivity.this);
-                          requestHandler.start();
-                          Log.d("TAG2", "index is great " + mUrl);
+                      if (baseFT){
+                          baseFT=false;
+                      }else{
+                          if (currencyIndex == 0) {
+                              baseIndex = i;
+                              base = baseArray[i];
+                              loadData(base,null);
+                              Log.d("TAG2", "index is 0 " + mUrl);
+                          } else {
+                              base = baseArray[i];
+                              String currentCurrency = currencyarray[currencyIndex];
+                              loadData(base,currentCurrency);
+                              Log.d("TAG2", "index is great " +base);
+                          }
                       }
                   }
 
@@ -88,21 +99,24 @@ public class MainActivity extends AppCompatActivity implements RequestHandler.On
         currencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                currencyIndex = i;
-                String currentBase = baseArray[baseIndex];
-                String currentCurrency = currencyarray[currencyIndex];
 
-                if (currencyIndex > 0) {
-                    mUrl=Urls.getRateByBaseAndSymbols(currentBase,currentCurrency);
-                    RequestHandler requestHandler=new RequestHandler(mUrl,onDataReceivedListener,MainActivity.this);
-                    requestHandler.start();
-                    Log.d("TAG2","second spinner "+mUrl);
+                if (currencyFT){
+                    currencyFT=false;
                 }else {
-                    mUrl= Urls.getRateByBase(currentBase);
-                    RequestHandler requestHandler=new RequestHandler(mUrl,onDataReceivedListener,MainActivity.this);
-                    requestHandler.start();
-                    Log.d("TAG2","second spinner "+mUrl);
+                    currencyIndex = i;
+                    String currentBase = baseArray[baseIndex];
+                    String currentCurrency = currencyarray[currencyIndex];
+
+                    if (currencyIndex > 0) {
+                        ArrayList<Currency> filteredList=filterResults(currentCurrency);
+                        populateData(filteredList,date);
+                        Log.d("TAG2","second spinner filter");
+                    }else {
+                        populateData(currencies,date);
+                        Log.d("TAG2","second spinner all");
+                    }
                 }
+
 
             }
 
@@ -112,6 +126,46 @@ public class MainActivity extends AppCompatActivity implements RequestHandler.On
             }
 
         });
+        loadData(base,null);
+        populateSpinners();
+
+    }
+
+    void loadData(String base, final String filterCurrency){
+        RetrofitClient.getApiService().getLatestRates(base)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        try {
+                            String result=response.body().string();
+                            date= JsonParser.getDate(result);
+                            currencies=JsonParser.parse(result);
+                            if (filterCurrency==null){
+                            populateData(currencies,date);
+                            }else{
+                                populateData(filterResults(filterCurrency),date);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(),"error loading date ",Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+
+    void populateData(ArrayList<Currency> currencyList,String date){
+        CurrencyAdapter currenciesAdapter=new CurrencyAdapter(getApplicationContext()
+                ,currencyList);
+        recyclerView.setAdapter(currenciesAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        lastUpdated.setText("last updated : "+date);
+    }
+
+    void populateSpinners(){
 
         ArrayAdapter BaseAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, baseArray);
         BaseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -120,21 +174,18 @@ public class MainActivity extends AppCompatActivity implements RequestHandler.On
         ArrayAdapter currencyAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, currencyarray);
         currencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         currencySpinner.setAdapter(currencyAdapter);
-
-
-
     }
 
-
-    @Override
-    public void OnDataReceived(ArrayList<Currency> currencyList, String base, String date) {
-        Log.d("TAG2"," OnDataReceived "+date);
-        lastUpdated.setText("last updated : "+date);
-        CurrencyAdapter currenciesAdapter=new CurrencyAdapter(getApplicationContext(),currencyList);
-        recyclerView.setAdapter(currenciesAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));}
-
-
+    ArrayList<Currency> filterResults(String currentCurrency){
+        ArrayList<Currency> filteredList=new ArrayList<>();
+        for (Currency currency:currencies){
+            if (currency.getCurrency().equals(currentCurrency)){
+                filteredList.add(currency);
+                break;
+            }
+        }
+        return filteredList;
+    }
 
 
 }

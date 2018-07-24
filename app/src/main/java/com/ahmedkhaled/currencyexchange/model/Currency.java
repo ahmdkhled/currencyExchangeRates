@@ -1,4 +1,4 @@
-package com.ahmedkhaled.currencyexchange;
+package com.ahmedkhaled.currencyexchange.model;
 
 /**
  * Created by Ahmed Khaled on 4/23/2017.
@@ -6,19 +6,14 @@ package com.ahmedkhaled.currencyexchange;
 
 public class Currency {
 
-    private int flag;
     private String currency;
     private double rate;
 
-    public Currency(String currency, double rate, int flag) {
+    public Currency(String currency, double rate) {
         this.currency = currency;
-        this.flag = flag;
         this.rate = rate;
     }
 
-    public int getFlag() {
-        return flag;
-    }
 
     public String getCurrency() {
         return currency;
