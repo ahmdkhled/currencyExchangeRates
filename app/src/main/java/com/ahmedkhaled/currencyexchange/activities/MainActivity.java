@@ -30,12 +30,11 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     String mUrl;
     int baseIndex,currencyIndex;
-    ArrayList<Currency> arrayList;
-    String[] baseArray,currencyarray;
     TextView lastUpdated;
     RecyclerView recyclerView;
     Spinner baseSpinner,currencySpinner;
     ArrayList<Currency> currencies;
+    ArrayList<String> baseArray,currencyArray;
     String date;
     String base="EUR";
     boolean baseFT=true;
@@ -56,14 +55,10 @@ public class MainActivity extends AppCompatActivity {
         lastUpdated =  findViewById(R.id.lastUpdated);
         baseSpinner = findViewById(R.id.baseSpinner);
         currencySpinner = findViewById(R.id.currencySpinner);
+        currencyArray = new ArrayList<>();
+        baseArray = new ArrayList<>();
 
-        arrayList = new ArrayList<>();
 
-        baseArray = new String[]{"EUR", "USD", "AUD", "BGN", "BRL", "CAD", "CHF", "CNY", "CZK", "DKK", "GBP", "HKD", "HRK", "HUF", "IDR", "ILS", "INR",
-                "JPY", "KRW", "MXN", "MYR", "NOK", "NZD", "PHP", "PLN", "RON", "RUB", "SEK", "SGD", "THB", "TRY", "ZAR",};
-
-        currencyarray = new String[]{"All", "EUR", "USD", "AUD", "BGN", "BRL", "CAD", "CHF", "CNY", "CZK", "DKK", "GBP", "HKD", "HRK", "HUF", "IDR"
-                , "ILS", "INR", "JPY", "KRW", "MXN", "MYR", "NOK", "NZD", "PHP", "PLN", "RON", "RUB", "SEK", "SGD", "THB", "TRY", "ZAR",};
 
 
         if (!Internet.isAvailable(this)) {
@@ -78,12 +73,12 @@ public class MainActivity extends AppCompatActivity {
                       }else{
                           if (currencyIndex == 0) {
                               baseIndex = i;
-                              base = baseArray[i];
+                              base = baseArray.get(i);
                               loadData(base,null);
                               Log.d("TAG2", "index is 0 " + mUrl);
                           } else {
-                              base = baseArray[i];
-                              String currentCurrency = currencyarray[currencyIndex];
+                              base = baseArray.get(i);
+                              String currentCurrency = currencyArray.get(currencyIndex);
                               loadData(base,currentCurrency);
                               Log.d("TAG2", "index is great " +base);
                           }
@@ -99,14 +94,11 @@ public class MainActivity extends AppCompatActivity {
         currencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
                 if (currencyFT){
                     currencyFT=false;
                 }else {
                     currencyIndex = i;
-                    String currentBase = baseArray[baseIndex];
-                    String currentCurrency = currencyarray[currencyIndex];
-
+                    String currentCurrency = currencyArray.get(currencyIndex);
                     if (currencyIndex > 0) {
                         ArrayList<Currency> filteredList=filterResults(currentCurrency);
                         populateData(filteredList,date);
@@ -117,21 +109,18 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
 
         });
         loadData(base,null);
-        populateSpinners();
+
 
     }
 
-    void loadData(String base, final String filterCurrency){
+    void loadData(final String base, final String filterCurrency){
         RetrofitClient.getApiService().getLatestRates(base)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -140,6 +129,16 @@ public class MainActivity extends AppCompatActivity {
                             String result=response.body().string();
                             date= JsonParser.getDate(result);
                             currencies=JsonParser.parse(result);
+                            Log.d("TAG2","size "+baseArray.size());
+
+                            if (baseArray.size()==0){
+                                baseArray=JsonParser.getcurrencies(result);
+                                baseArray.add(0,base);
+                                currencyArray.clear();
+                                currencyArray.addAll(baseArray);
+                                currencyArray.add(0,"all");
+                                populateSpinners();
+                            }
                             if (filterCurrency==null){
                             populateData(currencies,date);
                             }else{
@@ -166,12 +165,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void populateSpinners(){
-
-        ArrayAdapter BaseAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, baseArray);
+        ArrayAdapter BaseAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item,baseArray);
         BaseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         baseSpinner.setAdapter(BaseAdapter);
 
-        ArrayAdapter currencyAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, currencyarray);
+        ArrayAdapter currencyAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, currencyArray);
         currencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         currencySpinner.setAdapter(currencyAdapter);
     }

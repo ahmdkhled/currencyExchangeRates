@@ -42,4 +42,22 @@ public class JsonParser {
             return "";
         }
     }
+
+    public static ArrayList<String> getcurrencies(String jsonString){
+        ArrayList<String> currencies=new ArrayList<>();
+        JSONObject mainObj= null;
+        try {
+            mainObj = new JSONObject(jsonString);
+            JSONObject rates=mainObj.optJSONObject("rates");
+            Iterator<String> i=rates.keys();
+            while (i.hasNext()){
+                currencies.add(i.next());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return currencies;
+
+    }
 }
