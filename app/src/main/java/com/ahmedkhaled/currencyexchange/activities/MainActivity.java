@@ -1,11 +1,13 @@
 package com.ahmedkhaled.currencyexchange.activities;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     Spinner baseSpinner,currencySpinner;
     ArrayList<Currency> currencies;
     ArrayList<String> baseArray,currencyArray;
+    ViewGroup container;
     String date;
     String base="EUR";
     boolean baseFT=true;
@@ -55,15 +58,14 @@ public class MainActivity extends AppCompatActivity {
         lastUpdated =  findViewById(R.id.lastUpdated);
         baseSpinner = findViewById(R.id.baseSpinner);
         currencySpinner = findViewById(R.id.currencySpinner);
+        container=findViewById(R.id.activity_main);
         currencyArray = new ArrayList<>();
         baseArray = new ArrayList<>();
 
 
 
 
-        if (!Internet.isAvailable(this)) {
-            Toast.makeText(getApplicationContext(), "there is no connection available", Toast.LENGTH_LONG).show();
-        }
+
 
         baseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                   @Override
@@ -115,7 +117,11 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-        loadData(base,null);
+        if (Internet.isAvailable(this)) {
+            loadData(base,null);
+        }else {
+            showSnackbar();
+        }
 
 
     }
@@ -185,6 +191,19 @@ public class MainActivity extends AppCompatActivity {
         return filteredList;
     }
 
-
+    void showSnackbar(){
+        Snackbar snackbar=Snackbar.make(container,"check your connection ",Snackbar.LENGTH_INDEFINITE)
+                .setAction("retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (Internet.isAvailable(getApplicationContext())){
+                            loadData(base,null);
+                        }else{
+                            showSnackbar();
+                        }
+                    }
+                });
+        snackbar.show();
+    }
 }
 
